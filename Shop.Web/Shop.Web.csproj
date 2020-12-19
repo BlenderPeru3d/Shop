@@ -5,6 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20201219010436_SinNotacion.cs" />
+    <Compile Remove="Migrations\20201219010436_SinNotacion.Designer.cs" />
+    <Compile Remove="Migrations\20201219011736_changeDataFormatString.cs" />
+    <Compile Remove="Migrations\20201219011736_changeDataFormatString.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore" Version="2.1.7" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.3" />
