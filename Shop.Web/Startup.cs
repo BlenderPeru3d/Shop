@@ -28,7 +28,7 @@ namespace Shop.Web
 
             services.AddTransient<SeedDb>();
 
-            services.AddScoped<IRepository, MockRepository>();
+            services.AddScoped<IRepository, Repository>();
 
             services.Configure<CookiePolicyOptions>(options =>
             {
