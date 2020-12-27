@@ -1,47 +1,67 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Shop.Web.Data
+﻿namespace Shop.Web.Data
 {
+    using Entities;
+    using Microsoft.AspNetCore.Identity;
+    using Shop.Web.Helpers;
     using System;
     using System.Linq;
     using System.Threading.Tasks;
-    using Entities;
 
     public class SeedDb
     {
         private readonly DataContext context;
-        private Random random;
+        private readonly IUserHelper userHelper;
+        private readonly Random random;
 
-        public SeedDb(DataContext context)
+        public SeedDb(DataContext context, IUserHelper userHelper)
         {
             this.context = context;
-            this.random = new Random();
+            this.userHelper = userHelper;
+            random = new Random();
         }
 
         public async Task SeedAsync()
         {
-            await this.context.Database.EnsureCreatedAsync();
+            await context.Database.EnsureCreatedAsync();
 
-            if (!this.context.Products.Any())
+            User user = await userHelper.GetUserByEmailAsync("peru3dblender@gmail.com");
+            if (user == null)
             {
-                this.AddProduct("iPhone X");
-                this.AddProduct("Magic Mouse");
-                this.AddProduct("iWatch Series 4");
-                await this.context.SaveChangesAsync();
+                user = new User
+                {
+                    FirstName = "Rodrigo",
+                    LastName = "Leite",
+                    Email = "peru3dblender@gmail.com",
+                    UserName = "peru3dblender@gmail.com",
+                    PhoneNumber = "+51993099557"
+                };
+
+                IdentityResult result = await userHelper.AddUserAsync(user, "123456");
+                if (result != IdentityResult.Success)
+                {
+                    throw new InvalidOperationException("Could not create the user in seeder");
+                }
+            }
+
+
+            if (!context.Products.Any())
+            {
+                AddProduct("iPhone X", user);
+                AddProduct("Magic Mouse", user);
+                AddProduct("iWatch Series 4", user);
+                await context.SaveChangesAsync();
             }
         }
 
-        private void AddProduct(string name)
+        private void AddProduct(string name, User user)
         {
-            this.context.Products.Add(new Product
+            context.Products.Add(new Product
             {
                 Name = name,
-                Price = this.random.Next(100),
+                Price = random.Next(100),
                 IsAvailabe = true,
-                Stock = this.random.Next(100)
+                Stock = random.Next(100),
+                User = user
             });
         }
     }
