@@ -17,7 +17,7 @@
                 <Entry
                     IsPassword="True"
                     Placeholder="Enter your password..."
-                    Text="{Binding PAssword}" />
+                    Text="{Binding Password}" />
                 <Button Command="{Binding LoginCommand}" Text="Login" />
             </StackLayout>
         </ScrollView>

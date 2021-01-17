@@ -18,3 +18,4 @@ namespace Shop.UIForms.Views
         }
     }
 }
+

@@ -1,6 +1,7 @@
 ﻿
 namespace Shop.Web.Controllers
 {
+    using System;
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
@@ -63,17 +64,20 @@ namespace Shop.Web.Controllers
 
                 if (view.ImageFile != null && view.ImageFile.Length > 0)
                 {
+                    var guid = Guid.NewGuid().ToString();
+                    var file = $"{guid}.jpg";
+
                     path = Path.Combine(
                         Directory.GetCurrentDirectory(), 
                         "wwwroot\\images\\Products", 
-                        view.ImageFile.FileName);
+                        file);
 
                     using (var stream = new FileStream(path, FileMode.Create))
                     {
                         await view.ImageFile.CopyToAsync(stream);
                     }
 
-                    path = $"~/images/Products/{view.ImageFile.FileName}";
+                    path = $"~/images/Products/{file}";
                 }
                 var product = this.ToProduct(view, path);
                 // TODO: Pending to change to: this.User.Identity.Name
@@ -148,17 +152,20 @@ namespace Shop.Web.Controllers
 
                     if (view.ImageFile != null && view.ImageFile.Length > 0)
                     {
+                        var guid = Guid.NewGuid().ToString();
+                        var file = $"{guid}.jpg";
+
                         path = Path.Combine(
                             Directory.GetCurrentDirectory(),
                             "wwwroot\\images\\Products",
-                            view.ImageFile.FileName);
+                            file);
 
                         using (var stream = new FileStream(path, FileMode.Create))
                         {
                             await view.ImageFile.CopyToAsync(stream);
                         }
 
-                        path = $"~/images/Products/{view.ImageFile.FileName}";
+                        path = $"~/images/Products/{file}";
                     }
                     var product = this.ToProduct(view, path);
                     // TODO: Pending to change to: this.User.Identity.Name
