@@ -2,7 +2,7 @@
 namespace Shop.Common.Models
 {
     using System.Text.Json.Serialization;
-    internal class User
+    public class User
     {
         [JsonPropertyName("firstName")]
         public string FirstName { get; set; }

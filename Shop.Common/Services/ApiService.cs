@@ -8,7 +8,7 @@ namespace Shop.Common.Services
     using Newtonsoft.Json;
     using Shop.Common.Models;
 
-    internal class ApiService
+    public class ApiService
     {
         public async Task<Response> GetListAsync<T>(string urlBase, string servicePrefix, string controller)
         {
