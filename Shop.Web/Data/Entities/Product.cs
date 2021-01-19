@@ -37,7 +37,7 @@ namespace Shop.Web.Data.Entities
 			get
 			{
 				if (string.IsNullOrEmpty(this.ImageUrl)) return null;
-				return $"http://www.shsopxamarin.somee.com{this.ImageUrl.Substring(1)}";
+				return $"https://shopwebtutorial.azurewebsites.net{this.ImageUrl.Substring(1)}";
 			}
 		}
 
