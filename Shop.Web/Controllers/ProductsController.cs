@@ -1,10 +1,6 @@
 ﻿
 namespace Shop.Web.Controllers
 {
-    using System;
-    using System.IO;
-    using System.Linq;
-    using System.Threading.Tasks;
     using Data;
     using Data.Entities;
     using Helpers;
@@ -12,6 +8,10 @@ namespace Shop.Web.Controllers
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
     using Models;
+    using System;
+    using System.IO;
+    using System.Linq;
+    using System.Threading.Tasks;
 
     [Authorize]
     public class ProductsController : Controller
@@ -62,28 +62,27 @@ namespace Shop.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var path = string.Empty;
+                string path = string.Empty;
 
                 if (view.ImageFile != null && view.ImageFile.Length > 0)
                 {
-                    var guid = Guid.NewGuid().ToString();
-                    var file = $"{guid}.jpg";
+                    string guid = Guid.NewGuid().ToString();
+                    string file = $"{guid}.jpg";
 
                     path = Path.Combine(
                         Directory.GetCurrentDirectory(), 
                         "wwwroot\\images\\Products", 
                         file);
 
-                    using (var stream = new FileStream(path, FileMode.Create))
+                    using (FileStream stream = new FileStream(path, FileMode.Create))
                     {
                         await view.ImageFile.CopyToAsync(stream);
                     }
 
                     path = $"~/images/Products/{file}";
                 }
-                var product = this.ToProduct(view, path);
-                // TODO: Pending to change to: this.User.Identity.Name
-                product.User = await userHelper.GetUserByEmailAsync("peru3dblender@gmail.com");
+                Product product = ToProduct(view, path);
+                product.User = await userHelper.GetUserByEmailAsync(User.Identity.Name);
                 await productRepository.CreateAsync(product);
                 return RedirectToAction(nameof(Index));
             }
@@ -121,7 +120,7 @@ namespace Shop.Web.Controllers
             {
                 return NotFound();
             }
-            var view = ToProductViewModel(product);
+            object view = ToProductViewModel(product);
             return View(view);
         }
 
@@ -150,28 +149,28 @@ namespace Shop.Web.Controllers
             {
                 try
                 {
-                    var path = view.ImageUrl;
+                    string path = view.ImageUrl;
 
                     if (view.ImageFile != null && view.ImageFile.Length > 0)
                     {
-                        var guid = Guid.NewGuid().ToString();
-                        var file = $"{guid}.jpg";
+                        string guid = Guid.NewGuid().ToString();
+                        string file = $"{guid}.jpg";
 
                         path = Path.Combine(
                             Directory.GetCurrentDirectory(),
                             "wwwroot\\images\\Products",
                             file);
 
-                        using (var stream = new FileStream(path, FileMode.Create))
+                        using (FileStream stream = new FileStream(path, FileMode.Create))
                         {
                             await view.ImageFile.CopyToAsync(stream);
                         }
 
                         path = $"~/images/Products/{file}";
                     }
-                    var product = this.ToProduct(view, path);
+                    Product product = ToProduct(view, path);
                     // TODO: Pending to change to: this.User.Identity.Name
-                    product.User = await userHelper.GetUserByEmailAsync("peru3dblender@gmail.com");
+                    product.User = await userHelper.GetUserByEmailAsync(User.Identity.Name);
                     await productRepository.UpdateAsync(product);
                 }
                 catch (DbUpdateConcurrencyException)
