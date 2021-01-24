@@ -1,34 +1,39 @@
 ﻿namespace Shop.Web.Helpers
 {
-	using System.Threading.Tasks;
-	using Data.Entities;
-	using Microsoft.AspNetCore.Identity;
+    using Data.Entities;
+    using Microsoft.AspNetCore.Identity;
     using Shop.Web.Models;
+    using System.Threading.Tasks;
 
     public class UserHelper : IUserHelper
 	{
 		private readonly UserManager<User> userManager;
         private readonly SignInManager<User> signInManager;
+        private readonly RoleManager<IdentityRole> roleManager;
 
-        public UserHelper(UserManager<User> userManager, SignInManager<User> signInManager)
+        public UserHelper(
+			UserManager<User> userManager,
+			SignInManager<User> signInManager,
+			RoleManager<IdentityRole> roleManager)
 		{
 			this.userManager = userManager;
             this.signInManager = signInManager;
+            this.roleManager = roleManager;
         }
 
 		public async Task<IdentityResult> AddUserAsync(User user, string password)
 		{
-			return await this.userManager.CreateAsync(user, password);
+			return await userManager.CreateAsync(user, password);
 		}
 
 		public async Task<User> GetUserByEmailAsync(string email)
 		{
-			return await this.userManager.FindByEmailAsync(email); ;
+			return await userManager.FindByEmailAsync(email); ;
 		}
 
 		public async Task<SignInResult> LoginAsync(LoginViewModel model)
 		{
-			return await this.signInManager.PasswordSignInAsync(
+			return await signInManager.PasswordSignInAsync(
 				model.Username,
 				model.Password,
 				model.RememberMe,
@@ -37,26 +42,49 @@
 
 		public async Task LogoutAsync()
 		{
-			await this.signInManager.SignOutAsync();
+			await signInManager.SignOutAsync();
 		}
 
 		public async Task<IdentityResult> UpdateUserAsync(User user)
 		{
-			return await this.userManager.UpdateAsync(user);
+			return await userManager.UpdateAsync(user);
 		}
 
 		public async Task<IdentityResult> ChangePasswordAsync(User user, string oldPassword, string newPassword)
 		{
-			return await this.userManager.ChangePasswordAsync(user, oldPassword, newPassword);
+			return await userManager.ChangePasswordAsync(user, oldPassword, newPassword);
 		}
 
 		public async Task<SignInResult> ValidatePasswordAsync(User user, string password)
 		{
-			return await this.signInManager.CheckPasswordSignInAsync(
+			return await signInManager.CheckPasswordSignInAsync(
 				user,
 				password,
 				false);
 		}
+
+		public async Task CheckRoleAsync(string roleName)
+		{
+            bool roleExists = await roleManager.RoleExistsAsync(roleName);
+			if (!roleExists)
+			{
+				await roleManager.CreateAsync(new IdentityRole
+				{
+					Name = roleName
+				});
+			}
+		}
+
+		public async Task AddUserToRoleAsync(User user, string roleName)
+		{
+			await userManager.AddToRoleAsync(user, roleName);
+		}
+
+		public async Task<bool> IsUserInRoleAsync(User user, string roleName)
+		{
+			return await userManager.IsInRoleAsync(user, roleName);
+		}
+
 
 	}
 
